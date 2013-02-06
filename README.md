@@ -7,6 +7,22 @@ SAT (boolean satisfiability) solver applications.
 As of this version, only minisat is supported (and it's pretty cool,
 so we should be fine with it for a wile ;) )
 
+Installing
+----------
+
+You can grab the current version from pypi:
+
+    $ sudo pip install satispy
+
+Or you can download a copy from https://github.com/netom/satispy, and
+runs
+
+    $ sudo ./setup.py install
+
+in the directory of the project.
+
+You can run the tests found in the test folder by running run_tests.py.
+
 How it works
 ------------
 
