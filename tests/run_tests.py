@@ -1,5 +1,12 @@
-import unittest
+#!/usr/bin/env python
+
+import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+
 import copy
+import unittest
 
 from satispy import *
 from satispy.io import *
