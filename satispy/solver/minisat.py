@@ -1,0 +1,49 @@
+from satispy.io import DimacsCnf
+from satispy import Variable
+
+from subprocess import call
+from tempfile import NamedTemporaryFile
+
+class Solution(object):
+    def __init__(self, success=False, varmap={}):
+        self.success = success
+        self.varmap = varmap
+
+    def __getitem__(self, i):
+        return self.varmap[i]
+
+class Minisat(object):
+    def solve(self, cnf):
+        s = Solution()
+
+        infile = NamedTemporaryFile(mode='w')
+        outfile = NamedTemporaryFile(mode='r')
+
+        io = DimacsCnf()
+        infile.write(io.tostring(cnf))
+        infile.flush()
+
+        ret = call('minisat %s %s > /dev/null' % (infile.name, outfile.name), shell=True)
+
+        infile.close()
+
+        if ret != 10:
+            return s
+
+        s.success = True
+
+        lines = outfile.readlines()[1:]
+
+        for line in lines:
+            varz = line.split(" ")[:-1]
+            for v in varz:
+                v = v.strip()
+                value = v[0] != '-'
+                v = v.lstrip('-')
+                vo = io.varobj(v)
+                s.varmap[vo] = value
+
+        # Close deletes the tmp files
+        outfile.close()
+
+        return s
