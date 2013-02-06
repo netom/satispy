@@ -66,10 +66,17 @@ class Cnf(object):
 
     def __or__(self, other):
         other = Cnf.create_from(other)
-        new_dis = frozenset()
-        for d1, d2 in [(d1,d2) for d1 in self.dis for d2 in other.dis]:
-            d3 = d1 | d2
-            new_dis |= frozenset([d3])
+
+        if len(self.dis) > 0 and len(other.dis) > 0:
+            new_dis = frozenset()
+            for d1, d2 in [(d1,d2) for d1 in self.dis for d2 in other.dis]:
+                d3 = d1 | d2
+                new_dis |= frozenset([d3])
+        elif len(self.dis) == 0:
+            new_dis = other.dis
+        else:
+            new_dis = self.dis
+
         c = Cnf()
         c.dis = new_dis
         return c

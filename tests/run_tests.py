@@ -102,6 +102,12 @@ class CnfTest(unittest.TestCase):
 
         self.assertEqual(frozenset([frozenset([v1,v2,v3])]), cnf2.dis)
 
+        # Test empty CNF or
+        cnf = Cnf()
+        cnf |= v1
+
+        self.assertEqual(frozenset([frozenset([v1])]), cnf.dis)
+
     def testCreateFrom(self):
         v1 = Variable("v1")
         self.assertEqual(frozenset([frozenset([v1])]), Cnf.create_from(v1).dis)
