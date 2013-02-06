@@ -1,4 +1,12 @@
 # Naive implementation of Hamilton-cycle searching in a graph
+#
+# Based on the following paper:
+#
+# Formalizing Dangerous SAT Encodings
+# Alexander Hertel, Philipp Hertel, and Alasdair Urquhart
+# Department of Computer Science,
+# University of Toronto, Toronto ON M5S 3G4, Canada,
+# [ahertel][philipp][urquhart]@cs.toronto.edu
 
 from satispy import Variable, Cnf
 from satispy.solver import Minisat
