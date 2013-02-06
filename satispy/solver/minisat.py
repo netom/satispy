@@ -13,6 +13,11 @@ class Solution(object):
         return self.varmap[i]
 
 class Minisat(object):
+    COMMAND = 'minisat %s %s > /dev/null'
+
+    def __init__(self, command=COMMAND):
+        self.command = command
+
     def solve(self, cnf):
         s = Solution()
 
@@ -23,7 +28,7 @@ class Minisat(object):
         infile.write(io.tostring(cnf))
         infile.flush()
 
-        ret = call('minisat %s %s > /dev/null' % (infile.name, outfile.name), shell=True)
+        ret = call(self.command % (infile.name, outfile.name), shell=True)
 
         infile.close()
 
