@@ -4,13 +4,13 @@ SATisPy
 Satispy is a Python library that aims to be an interface to various
 SAT (boolean satisfiability) solver applications.
 
-As of this version, only minsat is supported (and it's pretty cool,
+As of this version, only minisat is supported (and it's pretty cool,
 so we should be fine with it for a wile ;) )
 
 How it works
 ------------
 
-You need minsat to be installed on your machine for this to work.
+You need minisat to be installed on your machine for this to work.
 
 Let's see an example:
 
@@ -59,9 +59,9 @@ arbitrarily with boolean operators:
 * XOR: ^
 * IMPLICATION >>
 
-The solver class Minsat is used to solve the formula.
+The solver class Minisat is used to solve the formula.
 
-Note: the Minsat class creates two temporary files, so it needs write
+Note: the Minisat class creates two temporary files, so it needs write
 access to the system's temporary directory
 
 The returned solution can be checked by reading the "success" boolean
