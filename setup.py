@@ -10,7 +10,7 @@ setup(
     author='FÁBIÁN Tamás László',
     author_email='giganetom@gmail.com',
     url='https://github.com/netom/satispy/',
-    download_url='https://github.com/netom/satispy/tarball/1_0a1',
+    download_url='https://github.com/netom/satispy/tarball/1.0a1#egg=satispy-1.0a1',
     license='BSD License',
     platforms='OS Independent',
     packages=['satispy', 'satispy.io', 'satispy.solver'],
