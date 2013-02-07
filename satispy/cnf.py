@@ -1,4 +1,4 @@
-import copy
+import numpy
 
 class Variable(object):
     def __init__(self, name, inverted=False):
@@ -45,13 +45,13 @@ class Variable(object):
 
 class Cnf(object):
     def __init__(self):
-        self.dis = frozenset()
+        self.dis = []
 
     @classmethod
     def create_from(cls, x):
         if isinstance(x, Variable):
             cnf = Cnf()
-            cnf.dis = frozenset([frozenset([copy.deepcopy(x)])])
+            cnf.dis = [frozenset([x])]
             return cnf
         elif isinstance(x, cls):
             return x
@@ -61,17 +61,17 @@ class Cnf(object):
     def __and__(self, other):
         other = Cnf.create_from(other)
         result = Cnf()
-        result.dis = self.dis | other.dis
+        result.dis = self.dis + other.dis
         return result
 
     def __or__(self, other):
         other = Cnf.create_from(other)
 
         if len(self.dis) > 0 and len(other.dis) > 0:
-            new_dis = frozenset()
+            new_dis = []
             for d1, d2 in [(d1,d2) for d1 in self.dis for d2 in other.dis]:
                 d3 = d1 | d2
-                new_dis |= frozenset([d3])
+                new_dis.append(d3)
         elif len(self.dis) == 0:
             new_dis = other.dis
         else:
@@ -90,7 +90,7 @@ class Cnf(object):
         for d in self.dis:
             c = Cnf()
             for v in d:
-                c.dis |= frozenset([frozenset([-v])])
+                c.dis.append(-v)
             cnfs.append(c)
 
         ret = cnfs.pop()
