@@ -86,7 +86,7 @@ class CnfTest(unittest.TestCase):
         v1 = Variable("v1")
         v2 = Variable("v2")
         cnf = v1 & v2
-        self.assertEqual(frozenset([frozenset([v1]),frozenset([v2])]), cnf.dis)
+        self.assertEqual(set([frozenset([v1]),frozenset([v2])]), set(cnf.dis))
 
     def testOr(self):
         v1 = Variable("v1")
@@ -110,7 +110,7 @@ class CnfTest(unittest.TestCase):
 
     def testCreateFrom(self):
         v1 = Variable("v1")
-        self.assertEqual(frozenset([frozenset([v1])]), Cnf.create_from(v1).dis)
+        self.assertEqual(set([frozenset([v1])]), set(Cnf.create_from(v1).dis))
 
     def testMixed(self):
         v1 = Variable("v1")
@@ -119,31 +119,31 @@ class CnfTest(unittest.TestCase):
         v4 = Variable("v4")
 
         self.assertEqual(
-            frozenset([
+            set([
                 frozenset([v1,v2]),
                 frozenset([v3])
             ]),
-            ((v1 | v2) & v3).dis
+            set(((v1 | v2) & v3).dis)
         )
 
         # Distribution
         self.assertEqual(
-            frozenset([
+            set([
                 frozenset([v1,v3]),
                 frozenset([v2,v3])
             ]),
-            ((v1 & v2) | v3).dis
+            set(((v1 & v2) | v3).dis)
         )
 
         # Double distribution
         self.assertEqual(
-            frozenset([
+            set([
                 frozenset([v1,v3]),
                 frozenset([v1,v4]),
                 frozenset([v2,v3]),
                 frozenset([v2,v4])
             ]),
-            ((v1 & v2) | (v3 & v4)).dis
+            set(((v1 & v2) | (v3 & v4)).dis)
         )
 
     def testNegation(self):

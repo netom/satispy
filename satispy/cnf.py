@@ -90,7 +90,7 @@ class Cnf(object):
         for d in self.dis:
             c = Cnf()
             for v in d:
-                c.dis.append(-v)
+                c.dis.append(frozenset([-v]))
             cnfs.append(c)
 
         ret = cnfs.pop()
