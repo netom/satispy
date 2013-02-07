@@ -89,6 +89,6 @@ PyMODINIT_FUNC initcnf(void)
     Py_INCREF(&cnf_VariableType);
     Py_INCREF(&cnf_CnfType);
 
-    PyModule_AddObject(m, "Variable", (PyObject *)&cnf_CnfType);
+    PyModule_AddObject(m, "Variable", (PyObject *)&cnf_VariableType);
     PyModule_AddObject(m, "Cnf", (PyObject *)&cnf_CnfType);
 }
