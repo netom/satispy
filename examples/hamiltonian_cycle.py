@@ -13,12 +13,13 @@ from satispy.solver import Minisat
 
 import networkx as nx
 
-N = 4
-M = 4
+N = 6
+M = 6
 
 g = nx.grid_2d_graph(N, M)
 
 lennodes = len(g.nodes())
+gnodes = g.nodes()
 
 exp = Cnf()
 
@@ -27,7 +28,7 @@ exp = Cnf()
 # marks the position of that node in the path
 print "Creating variables..."
 varz = {}
-for n in g.nodes():
+for n in gnodes:
     varz[n] = []
     for i in xrange(lennodes):
         # n, m, position
@@ -35,7 +36,7 @@ for n in g.nodes():
 
 # Total (X)
 print "Creating total clauses..."
-for i in g.nodes():
+for i in gnodes:
     c = Cnf()
     for j in xrange(lennodes):
         c |= varz[i][j]
@@ -43,9 +44,9 @@ for i in g.nodes():
 
 # Onto
 print "Creating onto clauses..."
-for j in xrange(len(g.nodes())):
+for j in xrange(lennodes):
     c = Cnf()
-    for i in g.nodes():
+    for i in gnodes:
         c |= varz[i][j]
     exp &= c
 
@@ -53,8 +54,8 @@ for j in xrange(len(g.nodes())):
 print "Creating 1-1 calues..."
 for j in xrange(lennodes):
     print j
-    for i1 in g.nodes():
-        for i2 in g.nodes():
+    for i1 in gnodes:
+        for i2 in gnodes:
             if i1 != i2:
                 exp &= -varz[i1][j] | -varz[i2][j]
 
@@ -62,8 +63,8 @@ for j in xrange(lennodes):
 print "Creating Fn calues..."
 for i in xrange(lennodes):
     print i
-    for j1 in g.nodes():
-        for j2 in g.nodes():
+    for j1 in gnodes:
+        for j2 in gnodes:
             if i1 != i2:
                 exp &= -varz[i][j1] | -varz[i][j2]
 
@@ -71,12 +72,12 @@ for i in xrange(lennodes):
 print "Adding edge clauses..."
 for j in xrange(lennodes):
     print j
-    for i in g.nodes():
-        for k in g.nodes():
+    for i in gnodes:
+        for k in gnodes:
             if i != k and k not in g.neighbors(i):
                 exp &= -varz[i][j] | -varz[k][(j+1) % lennodes]
             
-
+# Enabling minisat to write to stdout
 solver = Minisat('minisat %s %s')
 
 print "Solving..."
