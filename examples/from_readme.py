@@ -7,6 +7,8 @@ v1 = Variable('v1')
 v2 = Variable('v2')
 v3 = Variable('v3')
 
+print v2
+
 exp = v1 & v2 | v3
 
 solver = Minisat()
