@@ -3,6 +3,8 @@
 
 #include "cnf_variable.h"
 
+long nextnumber;
+
 PyObject * cnf_Variable_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
     Variable *self;
@@ -38,11 +40,7 @@ int cnf_Variable_init(Variable *self, PyObject *args, PyObject *kwds)
         Py_XDECREF(tmp);
     }
 
-    PyIntObject *i = (PyIntObject *)PyDict_GetItemString(self->ob_type->tp_dict, "nextnumber");
-
-    self->number = PyInt_AsLong(i);
-    PyDict_SetItemString(self->ob_type->tp_dict, "nextnumber", PyInt_FromLong(self->number + 1));
-    Py_DECREF(i);
+    self->number = nextnumber++;
 
     return 0;
 }

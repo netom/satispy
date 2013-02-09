@@ -5,6 +5,8 @@ typedef struct {
     long number;
 } Variable;
 
+extern long nextnumber;
+
 PyObject* cnf_Variable_new(PyTypeObject *type, PyObject *args, PyObject *kwds);
 
 int cnf_Variable_init(Variable *self, PyObject *args, PyObject *kwds);

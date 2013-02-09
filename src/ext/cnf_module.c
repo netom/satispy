@@ -199,7 +199,7 @@ PyMODINIT_FUNC initcnf(void)
     }
 
     //cnf_VariableType.tp_dict = PyDict_New();
-    PyDict_SetItemString(cnf_VariableType.tp_dict, "nextnumber", PyInt_FromLong(0));
+    //PyDict_SetItemString(cnf_VariableType.tp_dict, "nextnumber", PyInt_FromLong(0));
 
     cnf_CnfType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&cnf_CnfType) < 0) {
