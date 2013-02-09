@@ -1,12 +1,15 @@
 typedef struct {
     PyObject_HEAD
     PyObject *name;
-    int inverted;
+    long inverted;
+    long number;
 } Variable;
 
-void cnf_Variable_dealloc(Variable* self);
 PyObject* cnf_Variable_new(PyTypeObject *type, PyObject *args, PyObject *kwds);
+
 int cnf_Variable_init(Variable *self, PyObject *args, PyObject *kwds);
+
+void cnf_Variable_dealloc(Variable* self);
 
 PyObject* cnf_Variable_str(PyObject *self);
 
