@@ -1,3 +1,6 @@
+#ifndef CNF_CNF_H
+#define CNF_CNF_H
+
 #include <inttypes.h>
 
 typedef struct {
@@ -29,3 +32,6 @@ PyObject *cnf_Cnf_inplace_xor(PyObject* self, PyObject* other);
 PyObject *cnf_Cnf_inplace_rshift(PyObject* self, PyObject* other);
 
 PyObject *cnf_Cnf_getBuffer(PyObject *self, PyObject *args);
+
+#endif
+//CNF_CNF_H

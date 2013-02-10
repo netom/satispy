@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 int64_t init_variables   = 64;
-int64_t init_max_clauses = 1;
+int64_t init_max_clauses = 1; // MUST BE at least 1, assumed by variable
 
 PyObject * cnf_Cnf_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
@@ -99,5 +99,5 @@ PyObject * cnf_Cnf_inplace_rshift(PyObject* self, PyObject* other)
 PyObject *cnf_Cnf_getBuffer(PyObject *self, PyObject *args)
 {
     Cnf *me = (Cnf *)self;
-    return PyString_FromStringAndSize((char *)me->buf, me->variables/4*me->clauses);
+    return PyString_FromStringAndSize((char *)me->buf, me->variables/8*me->clauses);
 }

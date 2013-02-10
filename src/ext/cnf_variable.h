@@ -1,3 +1,6 @@
+#ifndef CNF_VARIABLE_H
+#define CNF_VARIABLE_H
+
 #include <inttypes.h>
 
 typedef struct {
@@ -22,3 +25,6 @@ PyObject* cnf_Variable_and(PyObject* self, PyObject* other);
 PyObject* cnf_Variable_or(PyObject* self, PyObject* other);
 PyObject* cnf_Variable_xor(PyObject* self, PyObject* other);
 PyObject* cnf_Variable_rshift(PyObject* self, PyObject* other);
+
+#endif
+//CNF_VARIABLE_H

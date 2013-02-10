@@ -3,6 +3,7 @@
 
 #include "cnf_module.h"
 #include "cnf_variable.h"
+#include "cnf_cnf.h"
 
 int64_t nextnumber;
 
@@ -58,7 +59,6 @@ void cnf_Variable_dealloc(Variable* self)
 PyObject* cnf_Variable_str(PyObject *self)
 {
     Variable *me = (Variable *)self;
-
     return PyString_FromFormat("%s%s", me->inverted ? "-" : "", PyString_AsString(me->name));
 }
 
@@ -66,33 +66,75 @@ PyObject* cnf_Variable_neg(PyObject* self)
 {
     Variable *me = (Variable *)self;
     PyObject *args = PyTuple_Pack(2, me->name, PyInt_FromLong(1 - me->inverted));
-
-    PyObject *new = cnf_Variable_new(self->ob_type, args, NULL);
-    cnf_Variable_init((Variable *)new, args, NULL);
-
-    return new;
+    return PyObject_CallObject((PyObject *) &cnf_VariableType, args);
 }
 
 PyObject* cnf_Variable_and(PyObject* self, PyObject* other)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
-    return NULL;
+    if (other->ob_type == &cnf_VariableType) {
+        Cnf *cnf = (Cnf *)PyObject_CallObject((PyObject *) &cnf_CnfType, NULL);
+        return (PyObject *)cnf;
+    } else if (other->ob_type == &cnf_CnfType) {
+        return cnf_Cnf_and(other, self);
+    } else {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "Only Variable and Cnf types can be mixed in an expression"
+        );
+        return NULL;
+    }
 }
 
 PyObject* cnf_Variable_or(PyObject* self, PyObject* other)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
-    return NULL;
+    if (other->ob_type == &cnf_VariableType) {
+        Variable *me = (Variable *)self;
+        Variable *ot = (Variable *)other;
+        Cnf *cnf = (Cnf *)PyObject_CallObject((PyObject *) &cnf_CnfType, NULL);
+        // TODO: variable numbers
+        // TODO: cnf->ensureSize(N, M)
+        // TODO: cnf->setVariable(clause, var) (inline? macro?)
+        cnf->clauses = 1;
+        return (PyObject *)cnf;
+    } else if (other->ob_type == &cnf_CnfType) {
+        return cnf_Cnf_or(other, self);
+    } else {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "Only Variable and Cnf types can be mixed in an expression"
+        );
+        return NULL;
+    }
 }
 
 PyObject* cnf_Variable_xor(PyObject* self, PyObject* other)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
-    return NULL;
+    if (other->ob_type == &cnf_VariableType) {
+        Cnf *cnf = (Cnf *)PyObject_CallObject((PyObject *) &cnf_CnfType, NULL);
+        return (PyObject *)cnf;
+    } else if (other->ob_type == &cnf_CnfType) {
+        return cnf_Cnf_xor(other, self);
+    } else {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "Only Variable and Cnf types can be mixed in an expression"
+        );
+        return NULL;
+    }
 }
 
 PyObject* cnf_Variable_rshift(PyObject* self, PyObject* other)
 {
-    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
-    return NULL;
+    if (other->ob_type == &cnf_VariableType) {
+        Cnf *cnf = (Cnf *)PyObject_CallObject((PyObject *) &cnf_CnfType, NULL);
+        return (PyObject *)cnf;
+    } else if (other->ob_type == &cnf_CnfType) {
+        return cnf_Cnf_rshift(other, self);
+    } else {
+        PyErr_SetString(
+            PyExc_TypeError,
+            "Only Variable and Cnf types can be mixed in an expression"
+        );
+        return NULL;
+    }
 }
