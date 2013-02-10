@@ -20,15 +20,17 @@ class VariableTest(unittest.TestCase):
         self.assertEqual("name", str(v))
         self.assertEqual("-name", str(-v))
 
-    def testEqualits(self):
-        v1 = Variable("v1")
-        v2 = Variable("v1")
+    def testName(self):
+        v1 = Variable('v1')
+        self.assertEqual('v1', v1.name)
 
-        self.assertEqual(v1,v1)
-        self.assertEqual(v1,v2)
-        self.assertEqual(v1,copy.deepcopy(v1))
+    def testInverted(self):
+        v1 = Variable('v1')
+        v2 = Variable('v2', 1)
 
-        self.assertNotEqual(v1,-v1)
+        self.assertEqual(0, v1.inverted)
+        self.assertEqual(1, v2.inverted)
+        self.assertRaises(ValueError, Variable, 'v3', 2)
 
     def testOrderOfOperationsDontMatter(self):
         v1 = Variable("v1")
@@ -115,14 +117,12 @@ class VariableTest(unittest.TestCase):
         v1 = Variable("v1")
         v2 = Variable("v2")
 
-        self.assertTrue(v1 < v2)
-        self.assertTrue(v1 <= v2)
-        self.assertTrue(v2 > v1)
-        self.assertTrue(v2 >= v1)
-        self.assertFalse(v1 > v2)
-        self.assertFalse(v1 >= v2)
-        self.assertFalse(v2 < v1)
-        self.assertFalse(v2 <= v1)
+    def testNegation(self):
+        v1 = Variable('v1')
+        v2 = Variable('v2', 1)
+
+        self.assertEqual(1, (-v1).inverted)
+        self.assertEqual(0, (-v2).inverted)
 
 class CnfTest(unittest.TestCase):
     def testAnd(self):

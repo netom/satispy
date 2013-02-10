@@ -7,14 +7,6 @@ v1 = Variable('v1')
 v2 = Variable('v2')
 v3 = Variable('v3')
 
-print v2.number
-print v1.number
-print v3.number
-print
-print v1.inverted
-print (-v1).inverted
-print v1.inverted
-
 exp = v1 & v2 | v3
 
 solver = Minisat()

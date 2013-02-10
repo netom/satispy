@@ -1,9 +1,10 @@
 #include <Python.h>
 #include "structmember.h"
 
+#include "cnf_module.h"
 #include "cnf_variable.h"
 
-long nextnumber;
+int64_t nextnumber;
 
 PyObject * cnf_Variable_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
@@ -31,7 +32,10 @@ int cnf_Variable_init(Variable *self, PyObject *args, PyObject *kwds)
         return -1;
     }
 
-    // TODO: inverted must be 1 or 0
+    if (self->inverted != 0 && self->inverted != 1) {
+        PyErr_SetString(PyExc_ValueError, "Parameter 'inverted' must be either 0 or 1.");
+        return -1;
+    }
 
     if (name) {
         tmp = self->name;
@@ -53,38 +57,42 @@ void cnf_Variable_dealloc(Variable* self)
 
 PyObject* cnf_Variable_str(PyObject *self)
 {
-    Variable *v = (Variable *)self;
+    Variable *me = (Variable *)self;
 
-    return PyString_FromFormat("%s%s", v->inverted ? "-" : "", PyString_AsString(v->name));
+    return PyString_FromFormat("%s%s", me->inverted ? "-" : "", PyString_AsString(me->name));
 }
 
 PyObject* cnf_Variable_neg(PyObject* self)
 {
-    Variable *v = (Variable *)self;
-    PyObject *args = PyTuple_Pack(2, v->name, PyInt_FromLong(1 - v->inverted));
+    Variable *me = (Variable *)self;
+    PyObject *args = PyTuple_Pack(2, me->name, PyInt_FromLong(1 - me->inverted));
 
-    Variable *new = (Variable *)cnf_Variable_new(self->ob_type, args, NULL);
-    cnf_Variable_init(new, args, NULL);
+    PyObject *new = cnf_Variable_new(self->ob_type, args, NULL);
+    cnf_Variable_init((Variable *)new, args, NULL);
 
     return new;
 }
 
 PyObject* cnf_Variable_and(PyObject* self, PyObject* other)
 {
+    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
     return NULL;
 }
 
 PyObject* cnf_Variable_or(PyObject* self, PyObject* other)
 {
+    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
     return NULL;
 }
 
 PyObject* cnf_Variable_xor(PyObject* self, PyObject* other)
 {
+    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
     return NULL;
 }
 
 PyObject* cnf_Variable_rshift(PyObject* self, PyObject* other)
 {
+    PyErr_SetString(PyExc_NotImplementedError, "Not implemented yet.");
     return NULL;
 }

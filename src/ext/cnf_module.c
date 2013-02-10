@@ -1,6 +1,7 @@
 #include <Python.h>
 #include "structmember.h"
 
+#include "cnf_module.h"
 #include "cnf_variable.h"
 #include "cnf_cnf.h"
 
@@ -165,6 +166,8 @@ static PyMemberDef Cnf_members[] = {
 };
 
 static PyMethodDef Cnf_methods[] = {
+    {"getBuffer", cnf_Cnf_getBuffer, METH_NOARGS,
+     "Returns the internal buffer as a python string"},
     {NULL}
 };
 
@@ -193,7 +196,6 @@ PyMODINIT_FUNC initcnf(void)
 {
     PyObject* m;
 
-    cnf_VariableType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&cnf_VariableType) < 0) {
         return;
     }
@@ -201,7 +203,6 @@ PyMODINIT_FUNC initcnf(void)
     //cnf_VariableType.tp_dict = PyDict_New();
     //PyDict_SetItemString(cnf_VariableType.tp_dict, "nextnumber", PyInt_FromLong(0));
 
-    cnf_CnfType.tp_new = PyType_GenericNew;
     if (PyType_Ready(&cnf_CnfType) < 0) {
         return;
     }

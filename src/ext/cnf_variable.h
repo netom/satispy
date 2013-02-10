@@ -1,11 +1,13 @@
+#include <inttypes.h>
+
 typedef struct {
     PyObject_HEAD
     PyObject *name;
-    long inverted;
-    long number;
+    int64_t inverted;
+    int64_t number;
 } Variable;
 
-extern long nextnumber;
+extern int64_t nextnumber;
 
 PyObject* cnf_Variable_new(PyTypeObject *type, PyObject *args, PyObject *kwds);
 
