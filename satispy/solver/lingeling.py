@@ -17,8 +17,7 @@ class Lingeling(object):
     def solve(self, cnf):
         s = Solution()
 
-        # Doesn't work on Windows, see https://stackoverflow.com/questions/15169101/how-to-create-a-temporary-file-that-can-be-read-by-a-subprocess
-        #infile = tempfile.NamedTemporaryFile(mode='w')
+        # NamedTemporaryFile doesn't work on Windows, see https://stackoverflow.com/questions/15169101/how-to-create-a-temporary-file-that-can-be-read-by-a-subprocess
         infile, infilename = tempfile.mkstemp(suffix="cnf")
 
         try:
@@ -30,7 +29,7 @@ class Lingeling(object):
                 cmd = self.command % (infilename.replace("\\","/"))
                 check_output(cmd, stderr=STDOUT, shell=True)
             # Lingeling and most SAT-solvers use a non-zero return code, which in most POSIX command indicates an error.
-            # That's why python raises an exception, but for here it's expected
+            # That's why python raises an exception, but here it's expected
             except CalledProcessError as call:
                 if call.returncode != 10 and call.returncode != 20:
                     s.error = call.output
@@ -43,15 +42,13 @@ class Lingeling(object):
 
         s.success = True
 
-        #print call.output
-
         for line in call.output.split("\n"):
             # Solution line example: v 1 -2 3 -4 5 6 0
             if len(line) > 0 and line[0] == 'v':
                 varz = line.split(" ")[1:-1]
                 for v in varz:
                     v = v.strip()
-                    value = v[0] != '-' # False variable start with -, True variables have just the number
+                    value = v[0] != '-'
                     v = v.lstrip('-')
                     vo = io.varobj(v)
                     s.varmap[vo] = value
