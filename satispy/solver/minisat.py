@@ -1,16 +1,9 @@
 from satispy.io import DimacsCnf
 from satispy import Variable
+from satispy import Solution
 
 from subprocess import call
 from tempfile import NamedTemporaryFile
-
-class Solution(object):
-    def __init__(self, success=False, varmap={}):
-        self.success = success
-        self.varmap = varmap
-
-    def __getitem__(self, i):
-        return self.varmap[i]
 
 class Minisat(object):
     COMMAND = 'minisat %s %s > /dev/null'
