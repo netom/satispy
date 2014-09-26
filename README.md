@@ -35,7 +35,7 @@ You can run the tests found in the test folder by running run_tests.py.
 How it works
 ------------
 
-You need a minisat and numpy to be installed on your machine for this to work.
+You need a SAT solver and numpy to be installed on your machine for this to work.
 
 Let's see an example:
 
