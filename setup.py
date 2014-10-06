@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='satispy',
-    version='1.0a4',
+    version='1.0a5',
     description='An interface to SAT solver tools (like minisat)',
     author='FÁBIÁN Tamás László',
     author_email='giganetom@gmail.com',
     url='https://github.com/netom/satispy/',
-    download_url='https://github.com/netom/satispy/tarball/1.0a4#egg=satispy-1.0a4',
+    download_url='https://github.com/netom/satispy/tarball/1.0a5#egg=satispy-1.0a5',
     license='BSD License',
     platforms='OS Independent',
     packages=['satispy', 'satispy.io', 'satispy.solver'],

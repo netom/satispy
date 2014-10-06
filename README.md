@@ -4,8 +4,13 @@ SATisPy
 Satispy is a Python library that aims to be an interface to various
 SAT (boolean satisfiability) solver applications.
 
-As of this version, only minisat is supported (and it's pretty cool,
-so we should be fine with it for a wile ;) )
+Supported solvers:
+
+ * [MiniSAT](http://minisat.se/) (Linux)
+ * [Lingeling](http://fmv.jku.at/lingeling/) (Linux, Cygwin)
+
+Support for other solvers should be fairly easy as long as they accept the
+[DIMACS CNF SAT format](http://www.satcompetition.org/2009/format-benchmarks2009.html).
 
 Installing
 ----------
@@ -21,12 +26,16 @@ runs
 
 in the directory of the project.
 
+If you want to develop on the library, use:
+
+	$ ./setup.py develop
+
 You can run the tests found in the test folder by running run_tests.py.
 
 How it works
 ------------
 
-You need minisat to be installed on your machine for this to work.
+You need a SAT solver and numpy to be installed on your machine for this to work.
 
 Let's see an example:
 
