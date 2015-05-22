@@ -1,5 +1,3 @@
-import numpy
-
 class Variable(object):
     def __init__(self, name, inverted=False):
         self.name = name
