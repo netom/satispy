@@ -1,3 +1,5 @@
+from itertools import product
+
 cnfClass = None
 
 class Variable(object):
@@ -45,13 +47,13 @@ class Variable(object):
 
 class NaiveCnf(object):
     def __init__(self):
-        self.dis = []
+        self.dis = frozenset()
 
     @classmethod
     def create_from(cls, x):
         if isinstance(x, Variable):
             cnf = NaiveCnf()
-            cnf.dis = [frozenset([x])]
+            cnf.dis = frozenset([frozenset([x])])
             return cnf
         elif isinstance(x, cls):
             return x
@@ -61,18 +63,18 @@ class NaiveCnf(object):
     def __and__(self, other):
         other = NaiveCnf.create_from(other)
         result = NaiveCnf()
-        result.dis = self.dis + other.dis
+        result.dis = self.dis | other.dis
         return result
 
     def __or__(self, other):
         other = NaiveCnf.create_from(other)
 
-        if len(self.dis) > 0 and len(other.dis) > 0:
-            new_dis = []
-            for d1, d2 in [(d1,d2) for d1 in self.dis for d2 in other.dis]:
-                d3 = d1 | d2
-                new_dis.append(d3)
-        elif len(self.dis) == 0:
+        if self.dis and other.dis:
+            new_dis = frozenset(
+                d1 | d2
+                for d1, d2 in product(self.dis, other.dis)
+            )
+        elif other.dis:
             new_dis = other.dis
         else:
             new_dis = self.dis
@@ -89,8 +91,10 @@ class NaiveCnf(object):
 
         for d in self.dis:
             c = NaiveCnf()
-            for v in d:
-                c.dis.append(frozenset([-v]))
+            c.dis = frozenset(
+                frozenset([-v])
+                for v in d
+            )
             cnfs.append(c)
 
         ret = NaiveCnf()
@@ -141,19 +145,19 @@ def reduceCnf(cnf):
         if dont_add: continue
         # TODO: Is this necessary anymore? Probably not. Do statistical analysis.
         if x not in output.dis:
-            output.dis.append(x)
+            output.dis |= frozenset([x])
     return output
 #end def reduceCnf(cnf)
 
 class Cnf(object):
     def __init__(self):
-        self.dis = []
+        self.dis = frozenset()
 
     @classmethod
     def create_from(cls, x):
         if isinstance(x, Variable):
             cnf = Cnf()
-            cnf.dis = [frozenset([x])]
+            cnf.dis = frozenset([frozenset([x])])
             return cnf
         elif isinstance(x, cls):
             return x
@@ -163,19 +167,18 @@ class Cnf(object):
     def __and__(self, other):
         other = Cnf.create_from(other)
         result = Cnf()
-        result.dis = self.dis + other.dis
+        result.dis = self.dis | other.dis
         return result
 
     def __or__(self, other):
         other = Cnf.create_from(other)
 
-        if len(self.dis) > 0 and len(other.dis) > 0:
-            new_dis = []
-            for d1, d2 in [(d1,d2) for d1 in self.dis for d2 in other.dis]:
-                d3 = d1 | d2
-                if d3 not in new_dis:
-                    new_dis.append(d3)
-        elif len(self.dis) == 0:
+        if self.dis and other.dis:
+            new_dis = frozenset(
+                d1 | d2
+                for d1, d2 in product(self.dis, other.dis)
+            )
+        elif other.dis:
             new_dis = other.dis
         else:
             new_dis = self.dis
@@ -192,8 +195,10 @@ class Cnf(object):
 
         for d in self.dis:
             c = Cnf()
-            for v in d:
-                c.dis.append(frozenset([-v]))
+            c.dis = frozenset(
+                frozenset([-v])
+                for v in d
+            )
             x = reduceCnf(c)
             if x not in cnfs:
                 cnfs.append(x)

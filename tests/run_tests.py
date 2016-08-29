@@ -2,6 +2,7 @@
 
 import os
 import sys
+from itertools import permutations
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
@@ -27,6 +28,47 @@ class VariableTest(unittest.TestCase):
         self.assertEqual(v1,copy.deepcopy(v1))
 
         self.assertNotEqual(v1,-v1)
+
+    def testOrderOfOperationsDontMatter(self):
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        v3 = Variable("v3")
+
+        variables = [v1, v2, v3]
+
+        two_variables_permutations = list(permutations(variables[:2]))
+        different_and_variables = {
+            va & vb
+            for va, vb in two_variables_permutations
+        }
+        self.assertEqual(len(different_and_variables), 1)
+        different_or_variables = {
+            va | vb
+            for va, vb in two_variables_permutations
+        }
+        self.assertEqual(len(different_or_variables), 1)
+        different_xor_variables = {
+            va ^ vb
+            for va, vb in two_variables_permutations
+        }
+        self.assertEqual(len(different_xor_variables), 1)
+
+        three_variables_permutations = list(permutations(variables[:3]))
+        different_and_variables = {
+            va & vb & vc
+            for va, vb, vc in three_variables_permutations
+        }
+        self.assertEqual(len(different_and_variables), 1)
+        different_or_variables = {
+            va | vb | vc
+            for va, vb, vc in three_variables_permutations
+        }
+        self.assertEqual(len(different_or_variables), 1)
+        different_xor_variables = {
+            va ^ vb ^ vc
+            for va, vb, vc in three_variables_permutations
+        }
+        self.assertEqual(len(different_xor_variables), 1)
 
     def testHash(self):
         v1 = Variable("v1")
@@ -86,7 +128,7 @@ class CnfTest(unittest.TestCase):
         v1 = Variable("v1")
         v2 = Variable("v2")
         cnf = v1 & v2
-        self.assertEqual(set([frozenset([v1]),frozenset([v2])]), set(cnf.dis))
+        self.assertEqual(frozenset([frozenset([v1]), frozenset([v2])]), cnf.dis)
 
     def testOr(self):
         v1 = Variable("v1")
@@ -96,21 +138,21 @@ class CnfTest(unittest.TestCase):
 
         cnf1 = v1 | v2
 
-        self.assertEqual(set([frozenset([v1,v2])]), set(cnf1.dis))
+        self.assertEqual(frozenset([frozenset([v1,v2])]), cnf1.dis)
 
         cnf2 = cnf1 | v3
 
-        self.assertEqual(set([frozenset([v1,v2,v3])]), set(cnf2.dis))
+        self.assertEqual(frozenset([frozenset([v1,v2,v3])]), cnf2.dis)
 
         # Test empty CNF or
         cnf = Cnf()
         cnf |= v1
 
-        self.assertEqual(set([frozenset([v1])]), set(cnf.dis))
+        self.assertEqual(frozenset([frozenset([v1])]), cnf.dis)
 
     def testCreateFrom(self):
         v1 = Variable("v1")
-        self.assertEqual(set([frozenset([v1])]), set(Cnf.create_from(v1).dis))
+        self.assertEqual(frozenset([frozenset([v1])]), Cnf.create_from(v1).dis)
 
     def testMixed(self):
         v1 = Variable("v1")
@@ -119,31 +161,31 @@ class CnfTest(unittest.TestCase):
         v4 = Variable("v4")
 
         self.assertEqual(
-            set([
+            frozenset([
                 frozenset([v1,v2]),
                 frozenset([v3])
             ]),
-            set(((v1 | v2) & v3).dis)
+            ((v1 | v2) & v3).dis
         )
 
         # Distribution
         self.assertEqual(
-            set([
+            frozenset([
                 frozenset([v1,v3]),
                 frozenset([v2,v3])
             ]),
-            set(((v1 & v2) | v3).dis)
+            ((v1 & v2) | v3).dis
         )
 
         # Double distribution
         self.assertEqual(
-            set([
+            frozenset([
                 frozenset([v1,v3]),
                 frozenset([v1,v4]),
                 frozenset([v2,v3]),
                 frozenset([v2,v4])
             ]),
-            set(((v1 & v2) | (v3 & v4)).dis)
+            ((v1 & v2) | (v3 & v4)).dis
         )
 
     def testNegation(self):
@@ -152,8 +194,8 @@ class CnfTest(unittest.TestCase):
         v3 = Variable("v3")
 
         self.assertEqual(
-            set([frozenset([-v1])]),
-            set((-Cnf.create_from(v1)).dis)
+            frozenset([frozenset([-v1])]),
+            (-Cnf.create_from(v1)).dis
         )
 
     def testXor(self):
@@ -163,11 +205,11 @@ class CnfTest(unittest.TestCase):
         cnf = v1 ^ v2
 
         self.assertEqual(
-            set([
+            frozenset([
                 frozenset([v1,v2]),
                 frozenset([-v1,-v2])
             ]),
-            set(cnf.dis)
+            cnf.dis
         )
 
     def testImplication(self):
@@ -175,8 +217,8 @@ class CnfTest(unittest.TestCase):
         v2 = Variable("v2")
 
         self.assertEqual(
-            set([frozenset([-v1,v2])]),
-            set((v1 >> v2).dis)
+            frozenset([frozenset([-v1,v2])]),
+            (v1 >> v2).dis
         )
 
 class DimacsTest(unittest.TestCase):
