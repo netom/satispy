@@ -2,6 +2,7 @@
 
 import os
 import sys
+from itertools import permutations
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
@@ -27,6 +28,47 @@ class VariableTest(unittest.TestCase):
         self.assertEqual(v1,copy.deepcopy(v1))
 
         self.assertNotEqual(v1,-v1)
+
+    def testOrderOfOperationsDontMatter(self):
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        v3 = Variable("v3")
+
+        variables = [v1, v2, v3]
+
+        two_variables_permutations = list(permutations(variables[:2]))
+        different_and_variables = {
+            va & vb
+            for va, vb in two_variables_permutations
+        }
+        self.assertEqual(len(different_and_variables), 1)
+        different_or_variables = {
+            va | vb
+            for va, vb in two_variables_permutations
+        }
+        self.assertEqual(len(different_or_variables), 1)
+        different_xor_variables = {
+            va ^ vb
+            for va, vb in two_variables_permutations
+        }
+        self.assertEqual(len(different_xor_variables), 1)
+
+        three_variables_permutations = list(permutations(variables[:3]))
+        different_and_variables = {
+            va & vb & vc
+            for va, vb, vc in three_variables_permutations
+        }
+        self.assertEqual(len(different_and_variables), 1)
+        different_or_variables = {
+            va | vb | vc
+            for va, vb, vc in three_variables_permutations
+        }
+        self.assertEqual(len(different_or_variables), 1)
+        different_xor_variables = {
+            va ^ vb ^ vc
+            for va, vb, vc in three_variables_permutations
+        }
+        self.assertEqual(len(different_xor_variables), 1)
 
     def testHash(self):
         v1 = Variable("v1")

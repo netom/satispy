@@ -217,7 +217,7 @@ class Cnf(object):
         return self.dis == other.dis
 
     def __hash__(self):
-        return hash(self.dis)
+        return hash(tuple(self.dis))
 
 # Change this to NaiveCnf if you want.
 cnfClass = Cnf
