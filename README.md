@@ -96,3 +96,25 @@ Then, the solution can be queried for variable assignments by using it
 like a dictionary. Note that Variable objects are used, not strings.
 
 (This very example can be found in the examples directory)
+
+Parsing Boolean expressions
+---------------------------
+
+It is also possible to create a Cnf object directly, without first creating ``Variable`` objects:
+
+    from satispy import CnfFromString
+    from satispy.solver import Minisat
+    
+    exp, symbols = CnfFromString.create("v1 & v2 | v3")
+
+    solver = Minisat()
+
+    solution = solver.solve(exp)
+
+    if solution.success:
+        print "Found a solution:"
+        for symbol_name in symbols.keys():
+            print "%s is %s" % (symbol_name, solution[symbols[symbol_name]])
+    else:
+        print "The expression cannot be satisfied"
+
