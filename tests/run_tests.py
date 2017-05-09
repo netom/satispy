@@ -222,6 +222,44 @@ class CnfTest(unittest.TestCase):
             (v1 >> v2).dis
         )
 
+class ParserTest(unittest.TestCase):
+    def compare(self, string):
+        v1 = Variable('v1')
+        v2 = Variable('v2')
+        v3 = Variable('v3')
+
+        # print eval(string), CnfFromString().create(string)
+        parsed_cnf, symbol = CnfFromString.create(string)
+        self.assertEqual(hash(eval(string)), hash(parsed_cnf))
+
+    def testParser(self):
+        self.compare("v1")
+        self.compare("-v1")
+        self.compare('--v1')
+        self.compare('(-(-v1))')
+
+        self.compare("-v1 & -v2 | v3")
+        self.compare("((-v1) & -v2) | v3")
+
+        self.compare("v1 & -v2 | -v3")
+        self.compare(("v1 & v2 | v3"))
+
+        self.compare("(v1 & v2)")
+        self.compare("-(v1 & v2)")
+
+        self.compare("-(v1 & -v2) | v3")
+        self.compare("(-v1 & v2)")
+
+        self.compare("(v1 & -(v2 | v3))")
+
+        self.compare("-(v2 | v3)")
+        self.compare("v1 | -(v2 | v3)")
+
+        self.compare("v1 & (v2 | v3)")
+        self.compare("(v1 & v2) | v3")
+        self.compare("v1 & v2 | v3")
+
+
 class DimacsTest(unittest.TestCase):
     def testDimacs(self):
         v1 = Variable("v1")
