@@ -2,11 +2,13 @@ from satispy.io import DimacsCnf
 from satispy import Variable
 from satispy import Solution
 
+import sys
 from subprocess import call
 from tempfile import NamedTemporaryFile
 
 class Minisat(object):
-    COMMAND = 'minisat %s %s > /dev/null'
+    COMMAND = 'minisat %s %s > ' + \
+        ('NUL' if sys.platform == 'win32' else '/dev/null')
 
     def __init__(self, command=COMMAND):
         self.command = command
