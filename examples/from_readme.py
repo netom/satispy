@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 from satispy import Variable
 from satispy.solver import Minisat
 
@@ -12,12 +14,12 @@ solver = Minisat()
 solution = solver.solve(exp)
 
 if solution.error != False:
-    print "Error:"
-    print solution.error
+    print("Error:")
+    print(solution.error)
 elif solution.success:
-    print "Found a solution:"
-    print v1, solution[v1]
-    print v2, solution[v2]
-    print v3, solution[v3]
+    print("Found a solution:")
+    print(v1, solution[v1])
+    print(v2, solution[v2])
+    print(v3, solution[v3])
 else:
-    print "The expression cannot be satisfied"
+    print("The expression cannot be satisfied")

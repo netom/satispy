@@ -8,10 +8,13 @@
 # University of Toronto, Toronto ON M5S 3G4, Canada,
 # [ahertel][philipp][urquhart]@cs.toronto.edu
 
+from __future__ import absolute_import
+from __future__ import print_function
 from satispy import Variable, Cnf
 from satispy.solver import Minisat
 
 import networkx as nx
+from six.moves import range
 
 N = 6
 M = 6
@@ -26,52 +29,52 @@ exp = Cnf()
 # Variables
 # We create a variable for every node that
 # marks the position of that node in the path
-print "Creating variables..."
+print("Creating variables...")
 varz = {}
 for n in gnodes:
     varz[n] = []
-    for i in xrange(lennodes):
+    for i in range(lennodes):
         # n, m, position
         varz[n].append(Variable("%d_%d_%d" % (n[0], n[1], i)))
 
 # Total (X)
-print "Creating total clauses..."
+print("Creating total clauses...")
 for i in gnodes:
     c = Cnf()
-    for j in xrange(lennodes):
+    for j in range(lennodes):
         c |= varz[i][j]
     exp &= c
 
 # Onto
-print "Creating onto clauses..."
-for j in xrange(lennodes):
+print("Creating onto clauses...")
+for j in range(lennodes):
     c = Cnf()
     for i in gnodes:
         c |= varz[i][j]
     exp &= c
 
 # 1-1 (X)
-print "Creating 1-1 calues..."
-for j in xrange(lennodes):
-    print j
+print("Creating 1-1 calues...")
+for j in range(lennodes):
+    print(j)
     for i1 in gnodes:
         for i2 in gnodes:
             if i1 != i2:
                 exp &= -varz[i1][j] | -varz[i2][j]
 
 # Fn
-print "Creating Fn calues..."
-for i in xrange(lennodes):
-    print i
+print("Creating Fn calues...")
+for i in range(lennodes):
+    print(i)
     for j1 in gnodes:
         for j2 in gnodes:
             if i1 != i2:
                 exp &= -varz[i][j1] | -varz[i][j2]
 
 # Edge
-print "Adding edge clauses..."
-for j in xrange(lennodes):
-    print j
+print("Adding edge clauses...")
+for j in range(lennodes):
+    print(j)
     for i in gnodes:
         for k in gnodes:
             if i != k and k not in g.neighbors(i):
@@ -80,18 +83,18 @@ for j in xrange(lennodes):
 # Enabling minisat to write to stdout
 solver = Minisat('minisat %s %s')
 
-print "Solving..."
+print("Solving...")
 solution = solver.solve(exp)
 
 if not solution.success:
-    print "There is no Hamilton cycle in the graph."
+    print("There is no Hamilton cycle in the graph.")
     exit()
 
-print "Extracting solution..."
+print("Extracting solution...")
 path = []
 for n in g.nodes():
     nodepos = -1
-    for j in xrange(lennodes):
+    for j in range(lennodes):
         if solution[varz[n][j]]:
             nodepos = j
             break
@@ -100,4 +103,4 @@ for n in g.nodes():
 path.sort()
 
 for n in path:
-    print n[0], n[1]
+    print(n[0], n[1])
