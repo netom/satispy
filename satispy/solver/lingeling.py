@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from satispy.io import DimacsCnf
 from satispy import Variable
 from satispy import Solution

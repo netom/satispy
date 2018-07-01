@@ -1,4 +1,8 @@
+from __future__ import absolute_import
 from satispy import Cnf, Variable
+from six.moves import map
+from six.moves import range
+from six.moves import zip
 
 class DimacsCnf(object):
     def __init__(self):
@@ -30,7 +34,7 @@ class DimacsCnf(object):
 
         ret = "p cnf %d %d" % (len(varis), len(cnf.dis))
 
-        varis = dict(zip(sorted(list(varis)),map(str,range(1,len(varis)+1))))
+        varis = dict(list(zip(sorted(list(varis)),list(map(str,list(range(1,len(varis)+1)))))))
 
         for v in varis:
             vo = Variable(v)
@@ -65,11 +69,11 @@ class DimacsCnf(object):
 
         lines = new_lines[1:]
         c.dis = frozenset(
-            frozenset(map(lambda vn: Variable("v"+vn.strip(" \t\r\n-"), vn[0] == '-'), line.split(" ")[:-1]))
+            frozenset([Variable("v"+vn.strip(" \t\r\n-"), vn[0] == '-') for vn in line.split(" ")[:-1]])
             for line in lines
         )
 
-        for i in xrange(1,varz+1):
+        for i in range(1,varz+1):
             stri = str(i)
             vo = Variable('v'+stri)
             self.varname_dict[vo] = stri

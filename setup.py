@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
+from __future__ import absolute_import
 from setuptools import setup
 
 setup(
@@ -21,7 +22,7 @@ setup(
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Scientific/Engineering :: Mathematics',
         'Topic :: Software Development :: Libraries'
     ],
