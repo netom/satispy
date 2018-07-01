@@ -1,9 +1,11 @@
 from __future__ import absolute_import
 from itertools import product
 from six.moves import map
+from functools import total_ordering
 
 cnfClass = None
 
+@total_ordering
 class Variable(object):
     def __init__(self, name, inverted=False):
         self.name = name
@@ -46,6 +48,9 @@ class Variable(object):
             return -1
         else:
             return 1
+
+    def __lt__(self, other):
+        return self.__cmp__(other) == -1
 
 class NaiveCnf(object):
     def __init__(self):
