@@ -127,11 +127,11 @@ class NaiveCnf(object):
 
 def reduceCnf(cnf):
     """
-    I just found a remarkably large bug in my SAT solver and found an 
+    I just found a remarkably large bug in my SAT solver and found an
     interesting solution.
     Remove all b | -b
     (-b | b) & (b | -a) & (-b | a) & (a | -a)
-    becomes 
+    becomes
     (b | -a) & (-b | a)
 
     Remove all (-e) & (-e)
@@ -243,74 +243,74 @@ class CnfFromString(Cnf):
 
     @staticmethod
     def string_to_rpn(string):
-        # Convert string to RPN using the railroad-shunt algorithm 
-        
+        # Convert string to RPN using the railroad-shunt algorithm
+
         symbols = {} # list of 'Variable' objects; keys are strings used as names in input
         current_token = ''
-        
+
         output_queue = []
         stack = []
-        
+
         for i in range(0, len(string)):
             ch = string[i]
             operator_char = (ch in ["-", "&", "|", "^", ">", " ", "(", ")"])
-            
+
             # reached end of variable-name token
             if current_token and operator_char:
                 if current_token not in symbols.keys():
                     symbols[current_token] = Variable(current_token)
-                
-                output_queue.append(symbols[current_token])
-                current_token = ''
-                
-            elif current_token and i == len(string)-1:
-                
-                if not operator_char:
-                    current_token += ch
-                
-                if current_token not in symbols.keys():
-                    symbols[current_token] = Variable(current_token)
-                
+
                 output_queue.append(symbols[current_token])
                 current_token = ''
 
-           
+            elif current_token and i == len(string)-1:
+
+                if not operator_char:
+                    current_token += ch
+
+                if current_token not in symbols.keys():
+                    symbols[current_token] = Variable(current_token)
+
+                output_queue.append(symbols[current_token])
+                current_token = ''
+
+
             if ch in ["-", "&", "|", "^", '>']:
-                 
+
                 # don't let unary '-' operator pop a binary operator from the stack
                 # give parens a high precedence
                 if stack and ch != "-" and stack[-1] != '(':
                     output_queue.append(stack.pop())
-                    
+
                     # if popped a minus, pop again?
                     if output_queue[-1] == "-" and stack and stack[-1] != '(':
                         output_queue.append(stack.pop())
-                    
+
                 if ch == ">" and string[i+1] != ">":
-                    print "Error: single '>' is not allowed"
+                    print("Error: single '>' is not allowed")
                     return
                 if ch == ">" and string[i+1] == ">":
                     stack.append(ch)
                     i += 1
                 else:
                     stack.append(ch)
-                      
+
             if ch == "(":
                 stack.append("(")
-                
+
             if ch == ")":
-                while True:                
+                while True:
                     next_operator = stack.pop()
                     if next_operator == "(":
                         break
                     output_queue.append(next_operator)
-                
+
             if  ch not in ["-", "&", "|", "^", '>', "(", ")", " "]:
                 current_token += ch
-                        
+
         while stack:
             output_queue.append(stack.pop())
-            
+
         return output_queue, symbols
 
     @staticmethod
@@ -318,30 +318,30 @@ class CnfFromString(Cnf):
         result_stack = []
         i = 0
         while i < len(output_queue):
-                    
+
             # n.b. operators were recorded as strings, whislt variables are Variable objects
             if not isinstance(output_queue[i], str):
                 # not an operator
                 result_stack.append(output_queue[i])
-                
+
             elif output_queue[i] == "-":
                 # negation
                 result_stack[-1] = result_stack[-1].__neg__()
-                
+
             else:
                 # other operator
                 operator = output_queue[i]
                 rarg = result_stack.pop()
                 larg = result_stack.pop()
-                
+
                 result_stack.append(CnfFromString.apply_operator(larg, rarg, operator))
-                
+
             i += 1
-            
+
         return result_stack[0]
 
     @staticmethod
-    def apply_operator(larg, rarg, operator):    
+    def apply_operator(larg, rarg, operator):
         if operator == "&":
             return larg.__and__(rarg)
         elif operator == "|":
