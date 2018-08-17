@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/netom/satispy.svg?branch=master)](https://travis-ci.org/netom/satispy)
+[![Build Status](https://travis-ci.org/netom/satispy.svg?branch=bitfields)](https://travis-ci.org/netom/satispy)
 
 SATisPy
 =======
@@ -106,7 +106,7 @@ It is also possible to create a Cnf object directly, without first creating ``Va
 
     from satispy import CnfFromString
     from satispy.solver import Minisat
-    
+
     exp, symbols = CnfFromString.create("v1 & v2 | v3")
 
     solver = Minisat()
@@ -119,4 +119,3 @@ It is also possible to create a Cnf object directly, without first creating ``Va
             print "%s is %s" % (symbol_name, solution[symbols[symbol_name]])
     else:
         print "The expression cannot be satisfied"
-
