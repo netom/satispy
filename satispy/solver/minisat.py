@@ -11,8 +11,9 @@ class Minisat(object):
     COMMAND = 'minisat %s %s > ' + \
         ('NUL' if sys.platform == 'win32' else '/dev/null')
 
-    def __init__(self, command=COMMAND):
+    def __init__(self, command=COMMAND, timeout=None):
         self.command = command
+        self.timeout = timeout
 
     def solve(self, cnf):
         s = Solution()
@@ -24,7 +25,7 @@ class Minisat(object):
         infile.write(io.tostring(cnf))
         infile.flush()
 
-        ret = call(self.command % (infile.name, outfile.name), shell=True)
+        ret = call(self.command % (infile.name, outfile.name), shell=True, timeout=self.timeout)
 
         infile.close()
 
