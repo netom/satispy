@@ -5,8 +5,8 @@ from satispy import Solution
 from subprocess import call
 from tempfile import NamedTemporaryFile
 
-class Lingeling(object):
-    COMMAND = 'lingeling -q %s > %s'
+class Sat4j(object):
+    COMMAND = 'sat4j %s > %s'
 
     def __init__(self, command=COMMAND):
         self.command = command
@@ -25,7 +25,7 @@ class Lingeling(object):
 
         infile.close()
 
-        if ret != 10 and ret != 20:
+        if ret != 10:
             return s
 
         s.success = False

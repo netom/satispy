@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "satispy"
 description = "An interface to SAT solver tools (like minisat)"
 
-version = "1.2"
+version = "1.3"
 requires-python = ">= 3.10"
 
 dependencies = []

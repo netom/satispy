@@ -2,13 +2,12 @@ from satispy.io import DimacsCnf
 from satispy import Variable
 from satispy import Solution
 
-import sys
+from os import devnull
 from subprocess import call
 from tempfile import NamedTemporaryFile
 
 class Minisat(object):
-    COMMAND = 'minisat %s %s > ' + \
-        ('NUL' if sys.platform == 'win32' else '/dev/null')
+    COMMAND = 'minisat -verb=0 %s %s > ' + devnull
 
     def __init__(self, command=COMMAND):
         self.command = command
@@ -30,11 +29,14 @@ class Minisat(object):
         if ret != 10:
             return s
 
-        s.success = True
+        s.success = False
 
-        lines = outfile.readlines()[1:]
+        lines = outfile.readlines()
 
         for line in lines:
+            if line[0:3] == 'SAT':
+                s.success = True
+                continue
             varz = line.split(" ")[:-1]
             for v in varz:
                 v = v.strip()
@@ -43,7 +45,6 @@ class Minisat(object):
                 vo = io.varobj(v)
                 s.varmap[vo] = value
 
-        # Close deletes the tmp files
         outfile.close()
 
         return s

@@ -8,13 +8,10 @@
 # University of Toronto, Toronto ON M5S 3G4, Canada,
 # [ahertel][philipp][urquhart]@cs.toronto.edu
 
-from __future__ import absolute_import
-from __future__ import print_function
 from satispy import Variable, Cnf
 from satispy.solver import Minisat
 
 import networkx as nx
-from six.moves import range
 
 N = 6
 M = 6

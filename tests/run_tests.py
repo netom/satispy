@@ -299,22 +299,9 @@ class DimacsTest(unittest.TestCase):
         # if everything else is OK
         self.assertEqual(cnf1, cnf2)
 
-class MinisatTest(unittest.TestCase):
+class SolverTest(unittest.TestCase):
 
-    def testNoSolution(self):
-        v1 = Variable("v1")
-
-        cnf = v1 & -v1
-
-        solver = Minisat()
-
-        solution = solver.solve(cnf)
-
-        self.assertRaises(SATException, lambda: solution[v1])
-
-        self.assertFalse(solution.success)
-
-    def testSolution(self):
+    def getSatisfiableCnf(self):
         v1 = Variable("v1")
         v2 = Variable("v2")
         v3 = Variable("v3")
@@ -329,75 +316,54 @@ class MinisatTest(unittest.TestCase):
         # -v1,  v2, -v3,  v4
         # -v1,  v2,  v3,  v4
 
-        solver = Minisat()
+        return v1, v2, v3, v4, cnf
 
-        sol = solver.solve(cnf)
+    goodInputs = [
+        (True,  False, False, False),
+        (True,  False, True,  True ),
+        (True,  True,  False, False),
+        (True,  True,  True,  True ),
+        (False, True,  False, False),
+        (False, True,  False, True ),
+        (False, True,  True,  True )
+    ]
 
-        self.assertTrue(sol.success)
-
-        self.assertTrue(
-            (sol[v1],sol[v2], sol[v3], sol[v4])
-            in
-            [
-                (True,  False, False, False),
-                (True,  False, True,  True ),
-                (True,  True,  False, False),
-                (True,  True,  True,  True ),
-                (False, True,  False, False),
-                (False, True,  False, True ),
-                (False, True,  True,  True )
-            ]
-        )
-
-class PicosatTest(unittest.TestCase):
-
-    def testNoSolution(self):
+    def getUnsatisfiableCnf(self):
         v1 = Variable("v1")
+        return v1, v1 & -v1
 
-        cnf = v1 & -v1
+    def solverTest(self, solver):
+        v1, cnf = self.getUnsatisfiableCnf()
+        solution = solver.solve(cnf)
 
-        solver = Picosat()
+        self.assertFalse(solution.success)
+        self.assertRaises(SATException, lambda: solution[v1])
+
+        v1, v2, v3, v4, cnf = self.getSatisfiableCnf()
 
         solution = solver.solve(cnf)
 
-        self.assertRaises(SATException, lambda: solution[v1])
-
-        self.assertFalse(solution.success)
-
-    def testSolution(self):
-        v1 = Variable("v1")
-        v2 = Variable("v2")
-        v3 = Variable("v3")
-        v4 = Variable("v4")
-
-        cnf = (v1 | v2) & (-v3 | v4) & (-v1 | v3 | -v4)
-        #  v1, -v2, -v3, -v4
-        #  v1, -v2,  v3,  v4
-        #  v1,  v2, -v3, -v4
-        #  v1,  v2,  v3,  v4
-        # -v1,  v2, -v3, -v4
-        # -v1,  v2, -v3,  v4
-        # -v1,  v2,  v3,  v4
-
-        solver = Picosat()
-
-        sol = solver.solve(cnf)
-
-        self.assertTrue(sol.success)
-
+        self.assertTrue(solution.success)
         self.assertTrue(
-            (sol[v1],sol[v2], sol[v3], sol[v4])
-            in
-            [
-                (True,  False, False, False),
-                (True,  False, True,  True ),
-                (True,  True,  False, False),
-                (True,  True,  True,  True ),
-                (False, True,  False, False),
-                (False, True,  False, True ),
-                (False, True,  True,  True )
-            ]
+            (
+                solution[v1],
+                solution[v2],
+                solution[v3],
+                solution[v4]
+            ) in self.goodInputs
         )
+
+    def testMinisat(self):
+        self.solverTest(Minisat())
+
+    def testPicosat(self):
+        self.solverTest(Picosat())
+
+    def testLingeling(self):
+        self.solverTest(Lingeling())
+
+    def testSat4j(self):
+        self.solverTest(Sat4j())
 
 if __name__ == "__main__":
     unittest.main()

@@ -8,11 +8,13 @@ SAT (boolean satisfiability) solver applications.
 
 Supported solvers:
 
- * [MiniSAT](http://minisat.se/) (Linux)
+ * [MiniSAT](http://minisat.se/)
  * [PicoSAT](https://fmv.jku.at/picosat/)
- * [Lingeling](https://fmv.jku.at/lingeling/) (Linux, Cygwin)
+ * [Lingeling](https://fmv.jku.at/lingeling/)
+ * [Sat4j](http://www.sat4j.org/)
 
-Support for other solvers should be fairly easy as long as they accept the
+Support for other solvers should be fairly easy to add as long as they accept
+the
 [DIMACS CNF SAT format](http://www.satcompetition.org/2009/format-benchmarks2009.html).
 
 Installing
@@ -23,18 +25,23 @@ You can grab the current version from pypi:
     $ sudo pip install satispy
 
 Or you can download a copy from https://github.com/netom/satispy, and
-runs
+run
 
-    $ pip install .
+    pip install .
 
-in the directory of the project.
+in the directory.
 
-You can run the tests found in the test folder by running run_tests.py.
+You can run the tests found in the test folder by
+
+    ./tests/run_tests.py.
+
+All the solvers need to be installed to be able to run the tests.
 
 How it works
 ------------
 
-You need a SAT solver to be installed on your machine for this to work.
+You need the minisat SAT solver to be installed on your machine for this to
+work.
 
 Let's see an example:
 
@@ -70,9 +77,9 @@ solution.
 First, the program imports the various classes so we can build an expression
 and try to solve it.
 
-Every expression is in CNF form, but we don't have to enter the expression
-in it. The Cnf class takes care of the proper arranging of the boolean
-terms.
+SAT solvers expect their input to be in CNF, but we don't have to enter out
+expression as a CNF. The Cnf class takes care of the proper arranging of the
+boolean terms.
 
 Expressions can be built by creating variables and gluing them together
 arbitrarily with boolean operators:
@@ -83,7 +90,8 @@ arbitrarily with boolean operators:
 * XOR: ^
 * IMPLICATION >>
 
-The solver class Minisat, Picosat, or Lingeling is used to solve the formula.
+The solver class Minisat, Picosat, Sat4j, or Lingeling is used to solve the
+formula.
 
 Note: these classes create temporary files, so they need write access to the
 system's temporary directory
@@ -98,7 +106,8 @@ dictionary. Note that Variable objects are used, not strings.
 Parsing Boolean expressions
 ---------------------------
 
-It is also possible to create a Cnf object directly, without first creating ``Variable`` objects:
+It is also possible to create a Cnf object directly, without first creating
+``Variable`` objects:
 
     from satispy import CnfFromString
     from satispy.solver import Minisat

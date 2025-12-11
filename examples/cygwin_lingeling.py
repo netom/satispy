@@ -1,7 +1,5 @@
 # This is the example from the README, but modified to show how to use a solver (in this case lingeling) compiled in CYGWIN
 
-from __future__ import absolute_import
-from __future__ import print_function
 from satispy import Variable
 from satispy.solver import Lingeling
 
