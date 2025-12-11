@@ -9,7 +9,8 @@ SAT (boolean satisfiability) solver applications.
 Supported solvers:
 
  * [MiniSAT](http://minisat.se/) (Linux)
- * [Lingeling](http://fmv.jku.at/lingeling/) (Linux, Cygwin)
+ * [PicoSAT](https://fmv.jku.at/picosat/)
+ * [Lingeling](https://fmv.jku.at/lingeling/) (Linux, Cygwin)
 
 Support for other solvers should be fairly easy as long as they accept the
 [DIMACS CNF SAT format](http://www.satcompetition.org/2009/format-benchmarks2009.html).
@@ -24,13 +25,9 @@ You can grab the current version from pypi:
 Or you can download a copy from https://github.com/netom/satispy, and
 runs
 
-    $ sudo ./setup.py install
+    $ pip install .
 
 in the directory of the project.
-
-If you want to develop on the library, use:
-
-	$ ./setup.py develop
 
 You can run the tests found in the test folder by running run_tests.py.
 
@@ -86,16 +83,15 @@ arbitrarily with boolean operators:
 * XOR: ^
 * IMPLICATION >>
 
-The solver class Minisat is used to solve the formula.
+The solver class Minisat, Picosat, or Lingeling is used to solve the formula.
 
-Note: the Minisat class creates two temporary files, so it needs write
-access to the system's temporary directory
+Note: these classes create temporary files, so they need write access to the
+system's temporary directory
 
-The returned solution can be checked by reading the "success" boolean
-flag.
+The returned solution can be checked by reading the "success" boolean flag.
 
-Then, the solution can be queried for variable assignments by using it
-like a dictionary. Note that Variable objects are used, not strings.
+Then, the solution can be queried for variable assignments by using it like a
+dictionary. Note that Variable objects are used, not strings.
 
 (This very example can be found in the examples directory)
 
