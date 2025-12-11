@@ -349,5 +349,55 @@ class MinisatTest(unittest.TestCase):
             ]
         )
 
+class PicosatTest(unittest.TestCase):
+
+    def testNoSolution(self):
+        v1 = Variable("v1")
+
+        cnf = v1 & -v1
+
+        solver = Picosat()
+
+        solution = solver.solve(cnf)
+
+        self.assertRaises(SATException, lambda: solution[v1])
+
+        self.assertFalse(solution.success)
+
+    def testSolution(self):
+        v1 = Variable("v1")
+        v2 = Variable("v2")
+        v3 = Variable("v3")
+        v4 = Variable("v4")
+
+        cnf = (v1 | v2) & (-v3 | v4) & (-v1 | v3 | -v4)
+        #  v1, -v2, -v3, -v4
+        #  v1, -v2,  v3,  v4
+        #  v1,  v2, -v3, -v4
+        #  v1,  v2,  v3,  v4
+        # -v1,  v2, -v3, -v4
+        # -v1,  v2, -v3,  v4
+        # -v1,  v2,  v3,  v4
+
+        solver = Picosat()
+
+        sol = solver.solve(cnf)
+
+        self.assertTrue(sol.success)
+
+        self.assertTrue(
+            (sol[v1],sol[v2], sol[v3], sol[v4])
+            in
+            [
+                (True,  False, False, False),
+                (True,  False, True,  True ),
+                (True,  True,  False, False),
+                (True,  True,  True,  True ),
+                (False, True,  False, False),
+                (False, True,  False, True ),
+                (False, True,  True,  True )
+            ]
+        )
+
 if __name__ == "__main__":
     unittest.main()
