@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import
 import os
 import sys
 from itertools import permutations
@@ -302,6 +301,19 @@ class DimacsTest(unittest.TestCase):
 
 class MinisatTest(unittest.TestCase):
 
+    def testNoSolution(self):
+        v1 = Variable("v1")
+
+        cnf = v1 & -v1
+
+        solver = Minisat()
+
+        solution = solver.solve(cnf)
+
+        self.assertRaises(SATException, lambda: solution[v1])
+
+        self.assertFalse(solution.success)
+
     def testSolution(self):
         v1 = Variable("v1")
         v2 = Variable("v2")
@@ -320,6 +332,8 @@ class MinisatTest(unittest.TestCase):
         solver = Minisat()
 
         sol = solver.solve(cnf)
+
+        self.assertTrue(sol.success)
 
         self.assertTrue(
             (sol[v1],sol[v2], sol[v3], sol[v4])

@@ -1,8 +1,4 @@
-from __future__ import absolute_import
 from satispy import Cnf, Variable
-from six.moves import map
-from six.moves import range
-from six.moves import zip
 
 class DimacsCnf(object):
     def __init__(self):

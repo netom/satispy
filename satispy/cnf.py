@@ -1,6 +1,4 @@
-from __future__ import absolute_import
 from itertools import product
-from six.moves import map
 from functools import total_ordering
 
 cnfClass = None
@@ -154,7 +152,6 @@ def reduceCnf(cnf):
         if x not in output.dis:
             output.dis |= frozenset([x])
     return output
-#end def reduceCnf(cnf)
 
 class Cnf(object):
     def __init__(self):
@@ -350,9 +347,6 @@ class CnfFromString(Cnf):
             return larg.__xor__(rarg)
         elif operator == ">>":
             return larg.rshift(rarg)
-
-
-
 
 # Change this to NaiveCnf if you want.
 cnfClass = Cnf
