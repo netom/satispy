@@ -2,35 +2,42 @@ from satispy.io import DimacsCnf
 from satispy import Variable
 from satispy import Solution
 
-from subprocess import call
-from tempfile import NamedTemporaryFile
+import shutil
+import subprocess
 
 class Picosat(object):
-    COMMAND = 'picosat %s -o %s'
+    PATH = 'picosat'
 
-    def __init__(self, command=COMMAND):
-        self.command = command
+    def __init__(self, path=PATH, args=[]):
+        self.path = path
+        self.args = args
+
+    def available(self):
+        return shutil.which(self.path)
 
     def solve(self, cnf):
-        s = Solution()
+        path = self.available()
 
-        infile = NamedTemporaryFile(mode='w')
-        outfile = NamedTemporaryFile(mode='r')
+        if not path:
+            raise SATSolverMissing(self.path) 
+
+        process = subprocess.Popen(
+            [path] + self.args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+        )
 
         io = DimacsCnf()
-        infile.write(io.tostring(cnf))
-        infile.flush()
+        # TODO: have to be able to handle large inputs and outputs
+        stdout_data, stderr_data = process.communicate(io.tostring(cnf).encode())
 
-        ret = call(self.command % (infile.name, outfile.name), shell=True)
-
-        infile.close()
-
-        if ret != 10:
-            return s
-
+        s = Solution()
         s.success = False
 
-        lines = outfile.readlines()
+        if process.returncode not in [10]:
+            return s
+
+        lines = stdout_data.decode('utf-8').split('\n')
 
         for line in lines:
             if line[0:2] == 'c ':
@@ -46,7 +53,5 @@ class Picosat(object):
                     v = v.lstrip('-')
                     vo = io.varobj(v)
                     s.varmap[vo] = value
-
-        outfile.close()
 
         return s
