@@ -377,5 +377,11 @@ class SolverTest(unittest.TestCase):
             self.skipTest('Solver not available')
         self.solverTest(solver)
 
+    def testIntelSatSolver(self):
+        solver = IntelSatSolver()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
+
 if __name__ == "__main__":
     unittest.main()
