@@ -1,3 +1,4 @@
+from satispy.exception import SATSolverMissing
 from satispy.io import DimacsCnf
 from satispy import Variable
 from satispy import Solution

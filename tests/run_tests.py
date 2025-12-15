@@ -337,7 +337,7 @@ class SolverTest(unittest.TestCase):
         solution = solver.solve(cnf)
 
         self.assertFalse(solution.success)
-        self.assertRaises(SATException, lambda: solution[v1])
+        self.assertRaises(SATUnsatisfiable, lambda: solution[v1])
 
         v1, v2, v3, v4, cnf = self.getSatisfiableCnf()
 
@@ -354,16 +354,28 @@ class SolverTest(unittest.TestCase):
         )
 
     def testMinisat(self):
-        self.solverTest(Minisat())
+        solver = Minisat()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
 
     def testPicosat(self):
-        self.solverTest(Picosat())
+        solver = Picosat()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
 
     def testLingeling(self):
-        self.solverTest(Lingeling())
+        solver = Lingeling()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
 
     def testSat4j(self):
-        self.solverTest(Sat4j())
+        solver = Sat4j()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
 
 if __name__ == "__main__":
     unittest.main()
