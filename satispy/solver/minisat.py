@@ -13,15 +13,8 @@ class Minisat(object):
     PATH = 'minisat'
 
     def __init__(self, path=PATH, args=['-verb=0']):
-        if os.path.exists('/dev/stdin') and os.path.exists('/dev/stdout'):
-            stdin = '/dev/stdin'
-        elif 'isreserved' in dir(os.path) and os.path.isreserved('CON'):
-            stdin = 'CON'
-        else:
-            raise RuntimeError('No standard input/output devices (/dev/std*, CON) could be found.')
-
         self.path = path
-        self.args = args + [stdin]
+        self.args = args
 
     def available(self):
         return shutil.which(self.path)
@@ -32,38 +25,45 @@ class Minisat(object):
         if not path:
             raise SATSolverMissing(self.path) 
 
-        outfile = tempfile.NamedTemporaryFile(mode='r')
+        with tempfile.NamedTemporaryFile(mode='r', delete_on_close=False) as outfile, \
+             tempfile.NamedTemporaryFile(mode='w', delete_on_close=False) as infile:
 
-        process = subprocess.Popen(
-            [path] + self.args + [outfile.name],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
-        )
+            io = DimacsCnf()
+            infile.write(io.tostring(cnf))
+            infile.close()
 
-        io = DimacsCnf()
-        # TODO: have to be able to handle large inputs and outputs
-        _, stderr_data = process.communicate(io.tostring(cnf).encode())
+            process = subprocess.Popen(
+                [path] + self.args + [infile.name, outfile.name],
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
 
-        s = Solution()
-        s.success = False
+            )
 
-        if process.returncode not in [10]:
-            return s
+            process.communicate()
 
-        lines = outfile.readlines()
+            s = Solution()
 
-        for line in lines:
-            if line[0:3] == 'SAT':
+            if process.returncode == 10:
                 s.success = True
-                continue
-            varz = line.split(" ")[:-1]
-            for v in varz:
-                v = v.strip()
-                value = v[0] != '-'
-                v = v.lstrip('-')
-                vo = io.varobj(v)
-                s.varmap[vo] = value
+            elif process.returncode == 20:
+                s.success = False
+                return s
+            else:
+                raise SATSolverFailed('Sat solver exit code unknown.')
 
-        outfile.close()
+            lines = outfile.readlines()
+
+            for line in lines:
+                if line[0] not in "-0123456789":
+                    # "SAT", "UNSAT", or junk
+                    continue
+                varz = line.split(" ")[:-1]
+                for v in varz:
+                    v = v.strip()
+                    value = v[0] != '-'
+                    v = v.lstrip('-')
+                    vo = io.varobj(v)
+                    s.varmap[vo] = value
 
         return s

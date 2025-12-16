@@ -6,8 +6,8 @@ from satispy import Solution
 import shutil
 import subprocess
 
-class Picosat(object):
-    PATH = 'picosat'
+class Cadical(object):
+    PATH = 'cadical'
 
     def __init__(self, path=PATH, args=[]):
         self.path = path

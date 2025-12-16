@@ -8,9 +8,13 @@ SAT (boolean satisfiability) solver applications.
 
 Supported solvers:
 
+ * [Cadical](https://github.com/arminbiere/cadical)
+ * [CryptoMinisat](https://github.com/msoos/cryptominisat)
+ * [Glucose](https://github.com/audemard/glucose/)
+ * [Intel SAT Solver](https://github.com/alexander-nadel/intel_sat_solver)
+ * [Lingeling](https://fmv.jku.at/lingeling/)
  * [MiniSAT](http://minisat.se/)
  * [PicoSAT](https://fmv.jku.at/picosat/)
- * [Lingeling](https://fmv.jku.at/lingeling/)
  * [Sat4j](http://www.sat4j.org/)
 
 Support for other solvers should be fairly easy to add as long as they accept

@@ -6,8 +6,8 @@ from satispy import Solution
 import shutil
 import subprocess
 
-class Picosat(object):
-    PATH = 'picosat'
+class CryptoMinisat(object):
+    PATH = 'cryptominisat'
 
     def __init__(self, path=PATH, args=[]):
         self.path = path
@@ -33,7 +33,7 @@ class Picosat(object):
         stdout_data, _ = process.communicate(io.tostring(cnf).encode())
 
         s = Solution()
-
+        
         if process.returncode == 10:
             s.success = True
         elif process.returncode == 20:

@@ -9,10 +9,10 @@ import subprocess
 import os
 import tempfile
 
-class Sat4j(object):
-    PATH = 'sat4j'
+class Glucose(object):
+    PATH = 'glucose-simp'
 
-    def __init__(self, path=PATH, args=[]):
+    def __init__(self, path=PATH, args=['-verb=0']):
         self.path = path
         self.args = args
 
@@ -25,19 +25,22 @@ class Sat4j(object):
         if not path:
             raise SATSolverMissing(self.path) 
 
-        with tempfile.NamedTemporaryFile(mode='w', delete_on_close=False) as infile:
+        with tempfile.NamedTemporaryFile(mode='r', delete_on_close=False) as outfile, \
+             tempfile.NamedTemporaryFile(mode='w', delete_on_close=False) as infile:
+
             io = DimacsCnf()
             infile.write(io.tostring(cnf))
             infile.close()
 
             process = subprocess.Popen(
-                [path, infile.name] + self.args,
+                [path] + self.args + [infile.name, outfile.name],
                 stdin=subprocess.DEVNULL,
-                stdout=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
+
             )
 
-            stdout_data, _ = process.communicate()
+            process.communicate()
 
             s = Solution()
 
@@ -49,16 +52,18 @@ class Sat4j(object):
             else:
                 raise SATSolverFailed('Sat solver exit code unknown.')
 
-            lines = stdout_data.decode('utf-8').split('\n')
+            lines = outfile.readlines()
 
             for line in lines:
-                if line[0:2] == 'v ':
-                    varz = line.split(" ")[1:-1]
-                    for v in varz:
-                        v = v.strip()
-                        value = v[0] != '-'
-                        v = v.lstrip('-')
-                        vo = io.varobj(v)
-                        s.varmap[vo] = value
+                if line[0] not in "-0123456789":
+                    # "SAT", "UNSAT", or junk
+                    continue
+                varz = line.split(" ")[:-1]
+                for v in varz:
+                    v = v.strip()
+                    value = v[0] != '-'
+                    v = v.lstrip('-')
+                    vo = io.varobj(v)
+                    s.varmap[vo] = value
 
         return s

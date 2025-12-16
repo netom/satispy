@@ -353,6 +353,36 @@ class SolverTest(unittest.TestCase):
             ) in self.goodInputs
         )
 
+    def testCadical(self):
+        solver = CryptoMinisat()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
+
+    def testCryptoMinisat(self):
+        solver = CryptoMinisat()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
+
+    def testGlucose(self):
+        solver = Glucose()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
+
+    def testIntelSatSolver(self):
+        solver = IntelSatSolver()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
+
+    def testLingeling(self):
+        solver = Lingeling()
+        if not solver.available():
+            self.skipTest('Solver not available')
+        self.solverTest(solver)
+
     def testMinisat(self):
         solver = Minisat()
         if not solver.available():
@@ -365,20 +395,8 @@ class SolverTest(unittest.TestCase):
             self.skipTest('Solver not available')
         self.solverTest(solver)
 
-    def testLingeling(self):
-        solver = Lingeling()
-        if not solver.available():
-            self.skipTest('Solver not available')
-        self.solverTest(solver)
-
     def testSat4j(self):
         solver = Sat4j()
-        if not solver.available():
-            self.skipTest('Solver not available')
-        self.solverTest(solver)
-
-    def testIntelSatSolver(self):
-        solver = IntelSatSolver()
         if not solver.available():
             self.skipTest('Solver not available')
         self.solverTest(solver)

@@ -26,26 +26,25 @@ class Lingeling(object):
             [path] + self.args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
         )
 
         io = DimacsCnf()
-        # TODO: have to be able to handle large inputs and outputs
-        stdout_data, stderr_data = process.communicate(io.tostring(cnf).encode())
+        stdout_data, _ = process.communicate(io.tostring(cnf).encode())
 
         s = Solution()
-        s.success = False
 
-        if process.returncode not in [10, 20]:
+        if process.returncode == 10:
+            s.success = True
+        elif process.returncode == 20:
+            s.success = False
             return s
+        else:
+            raise SATSolverFailed('Sat solver exit code unknown.')
 
         lines = stdout_data.decode('utf-8').split('\n')
 
         for line in lines:
-            if line[0:2] == 'c ':
-                continue
-            if line[0:13] == 's SATISFIABLE':
-                s.success = True
-                continue
             if line[0:2] == 'v ':
                 varz = line.split(" ")[1:-1]
                 for v in varz:
